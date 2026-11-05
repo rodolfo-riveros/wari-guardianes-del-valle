@@ -1,4 +1,5 @@
 import Encabezado from '../components/Encabezado.jsx';
+import Icono from '../components/Icono.jsx';
 import { TACHOS } from '../data/tachos.js';
 
 export default function ParaProfes({ ir }) {
@@ -29,8 +30,8 @@ export default function ParaProfes({ ir }) {
           <div className="grid sm:grid-cols-2 gap-2">
             {TACHOS.map((t) => (
               <div key={t.id} className="flex items-center gap-3 rounded-2xl p-3 text-white" style={{ background: t.color }}>
-                <span className="text-3xl" aria-hidden="true">
-                  {t.icono}
+                <span className="bg-white rounded-full p-1 shrink-0">
+                  <Icono nombre={t.icono} size={36} />
                 </span>
                 <div>
                   <p className="font-extrabold">

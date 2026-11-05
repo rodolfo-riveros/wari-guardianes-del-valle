@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import Laguna from '../components/Laguna.jsx';
+import Icono from '../components/Icono.jsx';
 import Wari from '../components/Wari.jsx';
 import Dialogo from '../components/Dialogo.jsx';
 import { useProgreso } from '../context/ProgresoContext.jsx';
@@ -65,14 +66,14 @@ export default function Inicio({ ir }) {
               ir('mapa');
             }}
           >
-            ¡Jugar! ▶
+            ¡Jugar! <Icono nombre="play" />
           </motion.button>
           <div className="flex gap-3 flex-wrap justify-center">
             <button type="button" className="btn btn-blanco" onClick={() => ir('ajustes')}>
-              ⚙️ Ajustes
+              <Icono nombre="ajustes" size={28} /> Ajustes
             </button>
             <button type="button" className="btn btn-blanco" onClick={() => ir('profes')}>
-              👩‍🏫 Para profes y familias
+              <Icono nombre="familia" size={28} /> Para profes y familias
             </button>
           </div>
         </div>

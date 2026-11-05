@@ -1,5 +1,6 @@
 import { motion, useAnimationControls } from 'framer-motion';
 import { useEffect } from 'react';
+import Icono from './Icono.jsx';
 
 /**
  * Tacho con "boquita" (tapa) que se abre al recibir un residuo.
@@ -46,9 +47,7 @@ export default function Tacho({ tacho, abierto = false, pulso = 0, brillar = fal
           <path d="M44 62 Q50 67 56 62" stroke="#fff" strokeWidth="2.5" fill="none" strokeLinecap="round" />
           {/* ícono */}
           <circle cx="50" cy="88" r="16" fill="#fff" />
-          <text x="50" y="95" textAnchor="middle" fontSize="20">
-            {tacho.icono}
-          </text>
+          <Icono nombre={tacho.icono} x="37" y="75" size="26" />
           {/* tapa */}
           <motion.g animate={tapa} style={{ originX: '4%', originY: '100%' }}>
             <rect x="8" y="22" width="84" height="13" rx="6" fill={tacho.oscuro} />

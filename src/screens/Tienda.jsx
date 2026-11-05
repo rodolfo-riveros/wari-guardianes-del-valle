@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Encabezado from '../components/Encabezado.jsx';
+import Icono from '../components/Icono.jsx';
 import Wari from '../components/Wari.jsx';
 import Dialogo from '../components/Dialogo.jsx';
 import { ACCESORIOS } from '../data/accesorios.js';
@@ -48,9 +49,7 @@ export default function Tienda({ ir }) {
             const puesto = estado.equipados.includes(a.id);
             return (
               <div key={a.id} className="tarjeta p-3 flex items-center gap-3">
-                <div className="text-5xl shrink-0" aria-hidden="true">
-                  {a.icono}
-                </div>
+                <Icono nombre={a.icono} size={60} />
                 <div className="flex-1 min-w-0">
                   <p className="font-extrabold text-xl leading-tight">{a.nombre}</p>
                   <p className="text-sm text-stone-600 leading-tight">{a.desc}</p>
@@ -60,7 +59,7 @@ export default function Tienda({ ir }) {
                   onClick={() => accion(a)}
                   className={`btn shrink-0 !px-3 ${comprado ? (puesto ? 'btn-ocre' : 'btn-verde') : 'btn-primario'}`}
                 >
-                  {comprado ? (puesto ? 'Quitar' : 'Poner') : `🌱 ${a.precio}`}
+                  {comprado ? (puesto ? 'Quitar' : 'Poner') : <><Icono nombre="semilla" size={24} /> {a.precio}</>}
                 </button>
               </div>
             );

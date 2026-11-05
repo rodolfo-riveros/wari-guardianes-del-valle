@@ -214,11 +214,7 @@ export default function ResiduoIcon({ residuo, size = 64, apagado = false }) {
       aria-label={residuo.nombre}
       style={apagado ? { filter: 'grayscale(1) brightness(0.3)', opacity: 0.45 } : undefined}
     >
-      {dibujo || (
-        <text x="32" y="44" textAnchor="middle" fontSize="38">
-          {residuo.emoji}
-        </text>
-      )}
+      {dibujo || <circle cx="32" cy="32" r="24" fill="#ddd" />}
     </svg>
   );
 }

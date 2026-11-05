@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import Modal from './Modal.jsx';
 import Wari from './Wari.jsx';
+import Icono from './Icono.jsx';
 import Dialogo from './Dialogo.jsx';
 import { INSIGNIAS } from '../data/insignias.js';
 import { useProgreso } from '../context/ProgresoContext.jsx';
@@ -41,12 +42,12 @@ export default function ModalInsignia() {
           ))}
           <p className="text-lg font-extrabold text-cantuta">¡Insignia nueva!</p>
           <motion.div
-            className="text-7xl my-2"
+            className="my-2 flex justify-center"
             animate={{ scale: [1, 1.15, 1] }}
             transition={{ duration: 1.2, repeat: Infinity }}
             aria-hidden="true"
           >
-            {insignia.icono}
+            <Icono nombre={insignia.icono} size={100} />
           </motion.div>
           <h2 className="text-3xl font-extrabold">{insignia.nombre}</h2>
           <p className="text-base text-stone-600 mb-2">{insignia.como}</p>

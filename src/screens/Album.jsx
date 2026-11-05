@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Encabezado from '../components/Encabezado.jsx';
+import Icono from '../components/Icono.jsx';
 import ResiduoIcon from '../components/ResiduoIcon.jsx';
 import TarjetaResiduo from '../components/TarjetaResiduo.jsx';
 import Modal from '../components/Modal.jsx';
@@ -21,7 +22,7 @@ export default function Album({ ir }) {
         {TACHOS.map((t) => (
           <section key={t.id} className="px-4 mt-4">
             <h2 className="inline-block rounded-full px-4 py-1 text-white font-extrabold text-lg mb-2" style={{ background: t.color }}>
-              {t.icono} {t.nombre} · {t.sub}
+              <Icono nombre={t.icono} className="bg-white rounded-full p-0.5" /> {t.nombre} · {t.sub}
             </h2>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
               {RESIDUOS.filter((r) => r.tacho === t.id).map((r) => {

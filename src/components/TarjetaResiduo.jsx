@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import ResiduoIcon from './ResiduoIcon.jsx';
+import Icono from './Icono.jsx';
 import { TACHO_POR_ID } from '../data/tachos.js';
 
 /** Tarjeta educativa de un residuo. */
@@ -20,21 +21,21 @@ export default function TarjetaResiduo({ residuo, compacta = false, children }) 
         <div className="min-w-0">
           <h3 className="text-xl font-extrabold leading-tight">{residuo.nombre}</h3>
           <p className="text-base font-bold opacity-95">
-            {tacho.icono} {tacho.nombre} · {tacho.sub}
+            <Icono nombre={tacho.icono} className="bg-white rounded-full p-0.5" /> {tacho.nombre} · {tacho.sub}
           </p>
         </div>
       </div>
       <div className="tejido h-2" />
       <ul className="p-4 space-y-2 text-[1rem] leading-snug">
         <li>
-          <span className="font-extrabold">⏳ Tarda en desaparecer:</span> {residuo.tiempo}
+          <span className="font-extrabold"><Icono nombre="reloj" /> Tarda en desaparecer:</span> {residuo.tiempo}
         </li>
         <li>
-          <span className="font-extrabold">💡 ¿Sabías que…?</span> {residuo.dato}
+          <span className="font-extrabold"><Icono nombre="idea" /> ¿Sabías que…?</span> {residuo.dato}
         </li>
         {!compacta && (
           <li>
-            <span className="font-extrabold">{residuo.tacho === 'peligroso' ? '🧑‍🤝‍🧑 Qué hacer:' : '♻️ Idea:'}</span>{' '}
+            <span className="font-extrabold"><Icono nombre={residuo.tacho === 'peligroso' ? 'familia' : 'reciclar'} /> {residuo.tacho === 'peligroso' ? 'Qué hacer:' : 'Idea:'}</span>{' '}
             {residuo.reutilizar}
           </li>
         )}

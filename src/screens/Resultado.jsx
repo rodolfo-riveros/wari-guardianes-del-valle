@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useEffect, useMemo } from 'react';
 import Laguna from '../components/Laguna.jsx';
+import Icono from '../components/Icono.jsx';
 import Wari from '../components/Wari.jsx';
 import Dialogo from '../components/Dialogo.jsx';
 import Estrellas from '../components/Estrellas.jsx';
@@ -28,7 +29,7 @@ export default function Resultado({ ir, params }) {
           <p className="text-lg font-bold text-stone-500">Nivel {nivel} · {info?.nombre}</p>
           <h1 className="text-4xl font-extrabold text-cantuta">¡Nivel completado!</h1>
           <div className="flex justify-center my-2">
-            <Estrellas cantidad={estrellas} animar size="text-6xl" />
+            <Estrellas cantidad={estrellas} animar size={64} />
           </div>
           {extra && <p className="text-lg font-bold">{extra}</p>}
           <motion.p
@@ -37,7 +38,7 @@ export default function Resultado({ ir, params }) {
             transition={{ delay: 1.4, type: 'spring' }}
             className="text-2xl font-extrabold text-pasto"
           >
-            +{semillas} 🌱 semillas
+            +{semillas} <Icono nombre="semilla" size={34} /> semillas
           </motion.p>
         </div>
 
@@ -66,18 +67,18 @@ export default function Resultado({ ir, params }) {
         <div className="flex flex-wrap justify-center gap-3">
           {siguiente && (
             <button type="button" className="btn btn-primario btn-grande" onClick={() => ir(siguiente.pantalla)}>
-              Siguiente nivel ▶
+              Siguiente nivel <Icono nombre="play" />
             </button>
           )}
           <button type="button" className="btn btn-verde" onClick={() => ir('mapa')}>
-            🗺️ Ir al mapa
+            <Icono nombre="mapa" size={28} /> Ir al mapa
           </button>
           <button type="button" className="btn btn-blanco" onClick={() => ir(info.pantalla)}>
-            🔁 Jugar otra vez
+            <Icono nombre="repetir" size={26} /> Jugar otra vez
           </button>
           {!siguiente && (
             <button type="button" className="btn btn-ocre" onClick={() => ir('laguna')}>
-              🏞️ Ver mi laguna
+              <Icono nombre="laguna" size={28} /> Ver mi laguna
             </button>
           )}
         </div>

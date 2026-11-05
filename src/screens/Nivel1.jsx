@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import Laguna from '../components/Laguna.jsx';
+import Icono from '../components/Icono.jsx';
 import Encabezado from '../components/Encabezado.jsx';
 import Wari from '../components/Wari.jsx';
 import Dialogo from '../components/Dialogo.jsx';
@@ -123,7 +124,7 @@ export default function Nivel1({ ir }) {
               <section className="flex-1 grid place-items-center px-4 py-4 min-h-[150px]">
                 {fase === 'intro' ? (
                   <button type="button" className="btn btn-primario btn-grande" onClick={siguientePaso}>
-                    {paso < TACHOS.length ? (paso === 0 ? '¡Hola, tachos! ▶' : '¡Entendido! ▶') : '¡A jugar! ▶'}
+                    {paso < TACHOS.length ? (paso === 0 ? '¡Hola, tachos!' : '¡Entendido!') : '¡A jugar!'} <Icono nombre="play" />
                   </button>
                 ) : (
                   actual && (
@@ -182,7 +183,7 @@ export default function Nivel1({ ir }) {
         {tarjeta && (
           <TarjetaResiduo residuo={tarjeta}>
             <button type="button" className="btn btn-verde btn-grande" onClick={siguiente} autoFocus>
-              ¡Siguiente! ▶
+              ¡Siguiente! <Icono nombre="play" />
             </button>
           </TarjetaResiduo>
         )}

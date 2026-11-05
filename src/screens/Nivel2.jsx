@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import Laguna from '../components/Laguna.jsx';
+import Icono from '../components/Icono.jsx';
 import Encabezado from '../components/Encabezado.jsx';
 import Wari from '../components/Wari.jsx';
 import Dialogo from '../components/Dialogo.jsx';
@@ -100,7 +101,7 @@ export default function Nivel2({ ir }) {
           onVolver={() => ir('mapa')}
           extra={
             <span className="shrink-0 rounded-full bg-white/95 px-3 py-2 font-extrabold shadow" aria-label={`Faltan ${pendientes.length}`}>
-              🗑️ {pendientes.length}
+              <Icono nombre="basura" size={24} /> {pendientes.length}
             </span>
           }
         />
@@ -133,7 +134,7 @@ export default function Nivel2({ ir }) {
                           style={{ left: `${r.pos[0]}%`, top: `${r.pos[1]}%`, x: "-50%", y: "-50%" }}
                           aria-hidden="true"
                         >
-                          {r.tacho === 'organico' ? '🌱' : r.tacho === 'peligroso' ? '🌼' : '🌺'}
+                          <Icono nombre={r.tacho === 'organico' ? 'semilla' : r.tacho === 'peligroso' ? 'margarita' : 'flor'} size={34} />
                         </motion.div>
                       ))}
                     {/* basura */}

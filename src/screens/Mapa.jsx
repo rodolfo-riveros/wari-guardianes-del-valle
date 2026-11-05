@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import Laguna from '../components/Laguna.jsx';
+import Icono from '../components/Icono.jsx';
 import Encabezado from '../components/Encabezado.jsx';
 import Estrellas from '../components/Estrellas.jsx';
 import Wari from '../components/Wari.jsx';
@@ -8,12 +9,12 @@ import { useSonidos } from '../hooks/useSonidos.js';
 import { NIVELES } from '../data/niveles.js';
 
 const MENU = [
-  { p: 'laguna', icono: '🏞️', txt: 'Mi laguna' },
-  { p: 'album', icono: '📚', txt: 'Álbum' },
-  { p: 'insignias', icono: '🏅', txt: 'Insignias' },
-  { p: 'tienda', icono: '🛍️', txt: 'Tienda' },
-  { p: 'ajustes', icono: '⚙️', txt: 'Ajustes' },
-  { p: 'profes', icono: '👩‍🏫', txt: 'Profes' },
+  { p: 'laguna', icono: 'laguna', txt: 'Mi laguna' },
+  { p: 'album', icono: 'album', txt: 'Álbum' },
+  { p: 'insignias', icono: 'medalla', txt: 'Insignias' },
+  { p: 'tienda', icono: 'tienda', txt: 'Tienda' },
+  { p: 'ajustes', icono: 'ajustes', txt: 'Ajustes' },
+  { p: 'profes', icono: 'familia', txt: 'Profes' },
 ];
 
 export default function Mapa({ ir }) {
@@ -58,14 +59,14 @@ export default function Mapa({ ir }) {
                     }`}
                     aria-label={bloqueado ? `Nivel ${nv.n}: ${nv.nombre}. Bloqueado` : `Jugar nivel ${nv.n}: ${nv.nombre}`}
                   >
-                    <span aria-hidden="true">{bloqueado ? '🔒' : nv.icono}</span>
+                    <Icono nombre={bloqueado ? 'candado' : nv.icono} size={64} />
                   </motion.button>
                   <div className={`bg-white/90 rounded-3xl px-4 py-2 shadow-lg min-w-0 ${bloqueado ? 'opacity-80' : ''}`}>
                     <p className="text-sm font-bold text-stone-500">Nivel {nv.n}</p>
                     <p className="text-xl font-extrabold leading-tight">{nv.nombre}</p>
                     <p className="text-sm text-stone-600 leading-tight">{bloqueado ? 'Completa el nivel anterior' : nv.desc}</p>
                     <div className={`mt-1 flex ${i % 2 ? 'justify-end' : ''}`}>
-                      <Estrellas cantidad={estado.estrellas[nv.n]} size="text-2xl" />
+                      <Estrellas cantidad={estado.estrellas[nv.n]} size={28} />
                     </div>
                   </div>
                   {actual && (
@@ -82,9 +83,7 @@ export default function Mapa({ ir }) {
         <nav className="grid grid-cols-3 gap-3 px-4 mt-8" aria-label="Más opciones">
           {MENU.map((m) => (
             <button key={m.p} type="button" className="btn btn-blanco flex-col !gap-0 py-2" onClick={() => ir(m.p)}>
-              <span className="text-3xl" aria-hidden="true">
-                {m.icono}
-              </span>
+              <Icono nombre={m.icono} size={40} />
               <span className="text-base">{m.txt}</span>
             </button>
           ))}

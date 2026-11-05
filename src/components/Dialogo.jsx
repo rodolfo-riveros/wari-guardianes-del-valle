@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useReducedMotion } from 'framer-motion';
 import { useVoz } from '../hooks/useVoz.js';
+import Icono from './Icono.jsx';
 
 /** Globo de diálogo de Wari: texto letra por letra + lectura en voz alta. */
 export default function Dialogo({ texto, autoHablar = true, className = '' }) {
@@ -43,7 +44,7 @@ export default function Dialogo({ texto, autoHablar = true, className = '' }) {
           className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-laguna text-white text-xl grid place-items-center shadow active:scale-95"
           aria-label="Escuchar otra vez"
         >
-          🔊
+          <Icono nombre="altavoz" size={24} />
         </button>
       )}
     </div>

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useProgreso } from '../context/ProgresoContext.jsx';
+import Icono from './Icono.jsx';
 
 // Wari: vizcacha andina original, dibujada en SVG.
 // Estados: feliz | celebrando | pensando | seria | saludando | durmiendo
@@ -210,15 +211,9 @@ export default function Wari({ mood = 'feliz', accesorios, size = 180, className
         </motion.text>
       )}
       {mood === 'seria' && (
-        <motion.text
-          x="172"
-          y="52"
-          fontSize="34"
-          animate={{ scale: [1, 1.15, 1] }}
-          transition={{ duration: 1, repeat: Infinity }}
-        >
-          ⚠️
-        </motion.text>
+        <motion.g animate={{ scale: [1, 1.15, 1] }} transition={{ duration: 1, repeat: Infinity }}>
+          <Icono nombre="advertencia" x="164" y="12" size="44" />
+        </motion.g>
       )}
       {mood === 'durmiendo' && (
         <g fill="#2a8bbf" fontWeight="800">

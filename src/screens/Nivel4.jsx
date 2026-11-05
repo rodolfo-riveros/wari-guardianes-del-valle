@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import Laguna from '../components/Laguna.jsx';
+import Icono from '../components/Icono.jsx';
 import Encabezado from '../components/Encabezado.jsx';
 import Wari from '../components/Wari.jsx';
 import Dialogo from '../components/Dialogo.jsx';
@@ -55,7 +56,7 @@ export default function Nivel4({ ir }) {
   async function usarCamara() {
     sonidos.click();
     setPaso('cargando');
-    decir('Wari se está poniendo sus lentes… 👓', 'pensando');
+    decir('Wari se está poniendo sus lentes…', 'pensando');
     const [okCam, okModelo] = await Promise.all([camara.iniciar(), clasificador.cargar()]);
     if (!okCam) {
       camara.detener();
@@ -162,7 +163,7 @@ export default function Nivel4({ ir }) {
           onVolver={salir}
           extra={
             <span className="shrink-0 rounded-full bg-white/95 px-3 py-2 font-extrabold shadow" aria-label={`${hechos.length} de ${META} residuos`}>
-              🔎 {hechos.length}/{META}
+              <Icono nombre="lupa" size={24} /> {hechos.length}/{META}
             </span>
           }
         />
@@ -177,7 +178,7 @@ export default function Nivel4({ ir }) {
         <section className="px-4 mt-2 flex flex-col items-center gap-4">
           {paso === 'aviso' && (
             <div className="tarjeta p-5 text-center max-w-md">
-              <p className="text-5xl mb-2" aria-hidden="true">📸</p>
+              <div className="flex justify-center mb-2"><Icono nombre="camara" size={72} /></div>
               <p className="text-lg font-bold">
                 Vamos a usar la cámara para ver tu residuo.{' '}
                 <span className="text-cantuta">Las fotos no se guardan ni se envían a ningún lado.</span>
@@ -197,7 +198,7 @@ export default function Nivel4({ ir }) {
           {paso === 'cargando' && (
             <div className="tarjeta p-6 text-center">
               <motion.div className="text-6xl" animate={{ rotate: [0, 15, -15, 0] }} transition={{ duration: 1.2, repeat: Infinity }} aria-hidden="true">
-                👓
+                <Icono nombre="lentes" size={80} />
               </motion.div>
               <p className="text-xl font-extrabold mt-2">Wari se está poniendo sus lentes…</p>
               <p className="text-base text-stone-600">Esto puede tardar un ratito la primera vez.</p>
@@ -212,14 +213,14 @@ export default function Nivel4({ ir }) {
               {paso === 'pensando' && (
                 <div className="absolute inset-0 grid place-items-center bg-black/30">
                   <motion.span className="text-6xl" animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 0.8, repeat: Infinity }}>
-                    🔍
+                    <Icono nombre="lupa" size={72} />
                   </motion.span>
                 </div>
               )}
             </div>
             <div className="flex gap-3 flex-wrap justify-center">
               <button type="button" className="btn btn-primario btn-grande" onClick={escanear} disabled={paso === 'pensando'}>
-                📸 ¡Escanear!
+                <Icono nombre="camara" size={32} /> ¡Escanear!
               </button>
               <button type="button" className="btn btn-blanco" onClick={() => { setPaso('elegir'); decir('Elige el residuo que tienes en tu mano.'); }}>
                 Elegir yo
@@ -234,7 +235,7 @@ export default function Nivel4({ ir }) {
               <p className="text-lg font-bold mb-3">¿Es correcto?</p>
               <div className="flex gap-4 justify-center">
                 <button type="button" className="btn btn-verde btn-grande" onClick={() => confirmar(candidato)}>
-                  👍 Sí
+                  <Icono nombre="check" size={32} /> Sí
                 </button>
                 <button
                   type="button"
@@ -244,7 +245,7 @@ export default function Nivel4({ ir }) {
                     decir('No estoy segura… ¿Qué es? Elígelo aquí abajo.', 'pensando');
                   }}
                 >
-                  👎 No
+                  <Icono nombre="no" size={32} /> No
                 </button>
               </div>
             </div>
@@ -266,7 +267,7 @@ export default function Nivel4({ ir }) {
                     >
                       <ResiduoIcon residuo={r} size={52} />
                       <span className="text-[0.78rem] font-bold leading-tight text-center">{r.nombre}</span>
-                      {hecho && <span className="absolute top-0 right-1">✅</span>}
+                      {hecho && <span className="absolute top-0.5 right-0.5"><Icono nombre="check" size={22} /></span>}
                     </button>
                   );
                 })}
@@ -274,7 +275,7 @@ export default function Nivel4({ ir }) {
               {!manual && camara.estado === 'lista' && (
                 <div className="flex justify-center mt-3">
                   <button type="button" className="btn btn-azul" onClick={() => { setPaso('escanear'); decir('¡Probemos otra vez con la cámara!'); }}>
-                    📸 Volver a escanear
+                    <Icono nombre="camara" size={28} /> Volver a escanear
                   </button>
                 </div>
               )}
@@ -306,7 +307,7 @@ export default function Nivel4({ ir }) {
           {paso === 'tarjeta' && residuo && (
             <TarjetaResiduo residuo={residuo}>
               <button type="button" className="btn btn-verde btn-grande" onClick={siguiente} autoFocus>
-                {hechos.length >= META ? '¡Terminar! 🎉' : '¡Siguiente! ▶'}
+                {hechos.length >= META ? <>¡Terminar! <Icono nombre="fiesta" /></> : <>¡Siguiente! <Icono nombre="play" /></>}
               </button>
             </TarjetaResiduo>
           )}

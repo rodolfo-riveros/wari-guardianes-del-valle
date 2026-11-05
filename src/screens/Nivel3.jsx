@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 import Laguna from '../components/Laguna.jsx';
+import Icono from '../components/Icono.jsx';
 import Encabezado from '../components/Encabezado.jsx';
 import Wari from '../components/Wari.jsx';
 import Dialogo from '../components/Dialogo.jsx';
@@ -165,7 +166,7 @@ export default function Nivel3({ ir }) {
                   >
                     {op.residuo && <ResiduoIcon residuo={op.residuo} size={64} />}
                     <span>
-                      {respuesta && op.id === p.correcta && '✅ '}
+                      {respuesta && op.id === p.correcta && <Icono nombre="check" className="mr-1" />}
                       {op.txt}
                     </span>
                   </button>
@@ -174,7 +175,7 @@ export default function Nivel3({ ir }) {
               {respuesta && (
                 <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex justify-center mt-4">
                   <button type="button" className="btn btn-verde btn-grande" onClick={siguiente} autoFocus>
-                    {idx + 1 >= preguntas.length ? '¡Terminar! 🎉' : '¡Siguiente! ▶'}
+                    {idx + 1 >= preguntas.length ? <>¡Terminar! <Icono nombre="fiesta" /></> : <>¡Siguiente! <Icono nombre="play" /></>}
                   </button>
                 </motion.div>
               )}

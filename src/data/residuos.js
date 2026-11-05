@@ -13,7 +13,6 @@ export const RESIDUOS = [
   {
     id: 'botella_plastico',
     nombre: 'Botella de plástico',
-    emoji: '🧴',
     tacho: 'aprovechable',
     tiempo: 'Cientos de años (aprox. 450)',
     tiempoQuiz: 'anios',
@@ -26,7 +25,6 @@ export const RESIDUOS = [
   {
     id: 'lata_gaseosa',
     nombre: 'Lata de gaseosa',
-    emoji: '🥫',
     tacho: 'aprovechable',
     tiempo: 'Cientos de años (aprox. 200)',
     tiempoQuiz: 'anios',
@@ -39,7 +37,6 @@ export const RESIDUOS = [
   {
     id: 'periodico',
     nombre: 'Periódico',
-    emoji: '📰',
     tacho: 'aprovechable',
     tiempo: 'Unos meses (aprox. 1 a 2 meses)',
     tiempoQuiz: 'meses',
@@ -52,7 +49,6 @@ export const RESIDUOS = [
   {
     id: 'caja_carton',
     nombre: 'Caja de cartón',
-    emoji: '📦',
     tacho: 'aprovechable',
     tiempo: 'Unos meses (aprox. 2 meses)',
     tiempoQuiz: 'meses',
@@ -65,7 +61,6 @@ export const RESIDUOS = [
   {
     id: 'frasco_vidrio',
     nombre: 'Frasco de vidrio',
-    emoji: '🫙',
     tacho: 'aprovechable',
     tiempo: 'Muchísimo tiempo, quizá nunca (miles de años)',
     tiempoQuiz: 'anios',
@@ -78,7 +73,6 @@ export const RESIDUOS = [
   {
     id: 'cuaderno_viejo',
     nombre: 'Cuaderno viejo',
-    emoji: '📓',
     tacho: 'aprovechable',
     tiempo: 'Unos meses (aprox. 3 meses a 1 año)',
     tiempoQuiz: 'meses',
@@ -91,7 +85,6 @@ export const RESIDUOS = [
   {
     id: 'botella_vidrio',
     nombre: 'Botella de vidrio',
-    emoji: '🍾',
     tacho: 'aprovechable',
     tiempo: 'Muchísimo tiempo, quizá nunca (miles de años)',
     tiempoQuiz: 'anios',
@@ -106,7 +99,6 @@ export const RESIDUOS = [
   {
     id: 'cascara_platano',
     nombre: 'Cáscara de plátano',
-    emoji: '🍌',
     tacho: 'organico',
     tiempo: 'Unas semanas (aprox. 1 mes)',
     tiempoQuiz: 'dias',
@@ -119,7 +111,6 @@ export const RESIDUOS = [
   {
     id: 'cascara_naranja',
     nombre: 'Cáscara de naranja',
-    emoji: '🍊',
     tacho: 'organico',
     tiempo: 'Unos meses (aprox. 6 meses)',
     tiempoQuiz: 'meses',
@@ -132,7 +123,6 @@ export const RESIDUOS = [
   {
     id: 'coronta_choclo',
     nombre: 'Coronta de choclo',
-    emoji: '🌽',
     tacho: 'organico',
     tiempo: 'Unos meses (aprox. 2 a 4 meses)',
     tiempoQuiz: 'meses',
@@ -145,7 +135,6 @@ export const RESIDUOS = [
   {
     id: 'hojas_secas',
     nombre: 'Hojas secas',
-    emoji: '🍂',
     tacho: 'organico',
     tiempo: 'Unos meses (aprox. 1 a 6 meses)',
     tiempoQuiz: 'meses',
@@ -158,7 +147,6 @@ export const RESIDUOS = [
   {
     id: 'restos_pan',
     nombre: 'Restos de pan',
-    emoji: '🍞',
     tacho: 'organico',
     tiempo: 'Unos días (aprox. 1 a 2 semanas)',
     tiempoQuiz: 'dias',
@@ -171,7 +159,6 @@ export const RESIDUOS = [
   {
     id: 'cascara_huevo',
     nombre: 'Cáscara de huevo',
-    emoji: '🥚',
     tacho: 'organico',
     tiempo: 'Unos meses (aprox. 3 meses)',
     tiempoQuiz: 'meses',
@@ -184,7 +171,6 @@ export const RESIDUOS = [
   {
     id: 'cascara_papa',
     nombre: 'Cáscara de papa',
-    emoji: '🥔',
     tacho: 'organico',
     tiempo: 'Unas semanas (aprox. 1 mes)',
     tiempoQuiz: 'dias',
@@ -199,7 +185,6 @@ export const RESIDUOS = [
   {
     id: 'envoltura_galleta',
     nombre: 'Envoltura de galleta sucia',
-    emoji: '🍪',
     tacho: 'no_aprovechable',
     tiempo: 'Cientos de años (aprox. 100 a 400)',
     tiempoQuiz: 'anios',
@@ -212,7 +197,6 @@ export const RESIDUOS = [
   {
     id: 'papel_higienico',
     nombre: 'Papel higiénico usado',
-    emoji: '🧻',
     tacho: 'no_aprovechable',
     tiempo: 'Unas semanas (aprox. 1 mes)',
     tiempoQuiz: 'dias',
@@ -225,7 +209,6 @@ export const RESIDUOS = [
   {
     id: 'chicle',
     nombre: 'Chicle',
-    emoji: '🍬',
     tacho: 'no_aprovechable',
     tiempo: 'Muchos años (aprox. 5 años o más)',
     tiempoQuiz: null,
@@ -238,7 +221,6 @@ export const RESIDUOS = [
   {
     id: 'tecnopor_comida',
     nombre: 'Tecnopor con comida',
-    emoji: '🥡',
     tacho: 'no_aprovechable',
     tiempo: 'Muchísimo tiempo, quizá nunca (cientos o miles de años)',
     tiempoQuiz: 'anios',
@@ -251,7 +233,6 @@ export const RESIDUOS = [
   {
     id: 'servilleta_sucia',
     nombre: 'Servilleta sucia',
-    emoji: '🧽',
     tacho: 'no_aprovechable',
     tiempo: 'Unas semanas (aprox. 1 mes)',
     tiempoQuiz: 'dias',
@@ -264,7 +245,6 @@ export const RESIDUOS = [
   {
     id: 'cepillo_dientes',
     nombre: 'Cepillo de dientes viejo',
-    emoji: '🪥',
     tacho: 'no_aprovechable',
     tiempo: 'Cientos de años (aprox. 400 a 500)',
     tiempoQuiz: 'anios',
@@ -279,7 +259,6 @@ export const RESIDUOS = [
   {
     id: 'pila',
     nombre: 'Pila',
-    emoji: '🔋',
     tacho: 'peligroso',
     tiempo: 'Cientos de años, y suelta sustancias tóxicas (aprox. 500 a 1000)',
     tiempoQuiz: 'anios',
@@ -292,7 +271,6 @@ export const RESIDUOS = [
   {
     id: 'foco',
     nombre: 'Foco',
-    emoji: '💡',
     tacho: 'peligroso',
     tiempo: 'Muchísimo tiempo, quizá nunca',
     tiempoQuiz: 'anios',
@@ -305,7 +283,6 @@ export const RESIDUOS = [
   {
     id: 'medicina_vencida',
     nombre: 'Medicina vencida',
-    emoji: '💊',
     tacho: 'peligroso',
     tiempo: 'Depende de la medicina, pero ensucia el agua por mucho tiempo',
     tiempoQuiz: null,
@@ -318,7 +295,6 @@ export const RESIDUOS = [
   {
     id: 'celular_viejo',
     nombre: 'Celular viejo',
-    emoji: '📱',
     tacho: 'peligroso',
     tiempo: 'Cientos de años (aprox. 1000)',
     tiempoQuiz: 'anios',
@@ -331,7 +307,6 @@ export const RESIDUOS = [
   {
     id: 'aerosol',
     nombre: 'Aerosol',
-    emoji: '💨',
     tacho: 'peligroso',
     tiempo: 'Cientos de años (aprox. 200 a 500)',
     tiempoQuiz: 'anios',
