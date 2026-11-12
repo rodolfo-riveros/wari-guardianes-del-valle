@@ -1,14 +1,12 @@
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
 import Modal from './Modal.jsx';
-import Wari from './Wari.jsx';
-import Icono from './Icono.jsx';
+import Personaje from './Personaje.jsx';
 import Dialogo from './Dialogo.jsx';
+import Confeti from './Confeti.jsx';
 import { INSIGNIAS } from '../data/insignias.js';
 import { useProgreso } from '../context/ProgresoContext.jsx';
 import { useSonidos } from '../hooks/useSonidos.js';
-
-const COLORES = ['#d6336c', '#e0a63a', '#2E9E4F', '#2a8bbf', '#8b5cf6'];
 
 /** Muestra, una por una, las insignias recién ganadas. */
 export default function ModalInsignia() {
@@ -27,35 +25,35 @@ export default function ModalInsignia() {
       {insignia && (
         <motion.div
           key={insignia.id}
-          initial={{ scale: 0.6, rotate: -6 }}
+          initial={{ scale: 0.5, rotate: -8 }}
           animate={{ scale: 1, rotate: 0 }}
-          className="tarjeta relative w-full max-w-sm p-5 text-center overflow-hidden"
+          transition={{ type: 'spring', stiffness: 200, damping: 14 }}
+          className="panel relative w-full max-w-sm p-5 text-center overflow-hidden"
         >
-          {Array.from({ length: 24 }).map((_, i) => (
-            <motion.span
-              key={i}
-              className="absolute w-2.5 h-3.5 rounded-sm pointer-events-none"
-              style={{ left: `${(i * 41) % 100}%`, top: -12, background: COLORES[i % COLORES.length] }}
-              animate={{ y: [0, 520], rotate: [0, 540] }}
-              transition={{ duration: 2.4 + (i % 5) * 0.3, repeat: Infinity, delay: (i % 7) * 0.2, ease: 'linear' }}
+          <Confeti cantidad={28} alto={600} />
+          <p className="relative text-xl font-extrabold text-[#c2185b]">¡Insignia nueva!</p>
+          <div className="relative my-2 grid place-items-center h-40">
+            <motion.div
+              className="absolute w-48 h-48 rounded-full"
+              style={{ background: 'conic-gradient(from 0deg, #ffe08a55, #ffffff00 15%, #ffe08a55 30%, #ffffff00 45%, #ffe08a55 60%, #ffffff00 75%, #ffe08a55 90%, #ffffff00)' }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
             />
-          ))}
-          <p className="text-lg font-extrabold text-cantuta">¡Insignia nueva!</p>
-          <motion.div
-            className="my-2 flex justify-center"
-            animate={{ scale: [1, 1.15, 1] }}
-            transition={{ duration: 1.2, repeat: Infinity }}
-            aria-hidden="true"
-          >
-            <Icono nombre={insignia.icono} size={100} />
-          </motion.div>
-          <h2 className="text-3xl font-extrabold">{insignia.nombre}</h2>
-          <p className="text-base text-stone-600 mb-2">{insignia.como}</p>
-          <div className="flex items-end justify-center gap-2">
-            <Wari mood="celebrando" size={110} />
+            <motion.img
+              src={insignia.img}
+              alt=""
+              className="relative h-36 w-36 object-contain sprite"
+              animate={{ scale: [1, 1.08, 1], rotate: [0, -4, 4, 0] }}
+              transition={{ duration: 1.6, repeat: Infinity }}
+            />
           </div>
-          <Dialogo texto={`¡Ganaste la insignia ${insignia.nombre}! ¡Eres increíble, guardián!`} className="mt-2 text-left" />
-          <button type="button" className="btn btn-primario mt-4 w-full" onClick={verInsignia}>
+          <h2 className="relative text-3xl font-extrabold leading-tight">{insignia.nombre}</h2>
+          <p className="relative text-base text-stone-600 mb-1">{insignia.como}</p>
+          <div className="relative flex items-end gap-2 text-left">
+            <Personaje quien="wari" pose="celebrando" alto={110} />
+            <Dialogo texto={`¡Ganaste "${insignia.nombre}"! ¡Eres increíble, guardián!`} className="flex-1 mb-3 !py-2" />
+          </div>
+          <button type="button" className="btn btn-verde btn-grande mt-3 w-full relative" onClick={verInsignia}>
             ¡Genial!
           </button>
         </motion.div>

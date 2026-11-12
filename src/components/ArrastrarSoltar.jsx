@@ -10,7 +10,6 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import { useState } from 'react';
-import ResiduoIcon from './ResiduoIcon.jsx';
 import Tacho from './Tacho.jsx';
 
 /**
@@ -21,7 +20,7 @@ export function ZonaArrastre({ children, residuos, onSoltar, onEmpezar }) {
   const [activo, setActivo] = useState(null);
   const sensores = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: 6 } }),
-    useSensor(TouchSensor, { activationConstraint: { delay: 40, tolerance: 10 } }),
+    useSensor(TouchSensor, { activationConstraint: { distance: 5 } }),
     useSensor(KeyboardSensor),
   );
   const residuoActivo = residuos.find((r) => r.id === activo);
@@ -40,18 +39,16 @@ export function ZonaArrastre({ children, residuos, onSoltar, onEmpezar }) {
       }}
     >
       {children(activo)}
-      <DragOverlay>
+      <DragOverlay dropAnimation={null}>
         {residuoActivo ? (
-          <div className="pieza scale-110 rotate-6 cursor-grabbing">
-            <ResiduoIcon residuo={residuoActivo} size={78} />
-          </div>
+          <img src={residuoActivo.img} alt="" className="w-24 h-24 object-contain scale-110 rotate-6 cursor-grabbing sprite" />
         ) : null}
       </DragOverlay>
     </DndContext>
   );
 }
 
-export function ResiduoArrastrable({ residuo, size = 78, seleccionado, onTocar, conNombre = false, deshabilitado = false }) {
+export function ResiduoArrastrable({ residuo, size = 80, seleccionado, onTocar, deshabilitado = false, conNombre = false }) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({ id: residuo.id, disabled: deshabilitado });
   return (
     <button
@@ -62,16 +59,20 @@ export function ResiduoArrastrable({ residuo, size = 78, seleccionado, onTocar, 
       {...attributes}
       onClick={() => onTocar?.(residuo.id)}
       aria-label={`${residuo.nombre}. Arrástralo al tacho correcto o tócalo y luego toca un tacho.`}
-      className={`pieza touch-none cursor-grab ${seleccionado ? 'ring-4 ring-yellow-300 scale-105' : ''}`}
-      style={{ opacity: isDragging ? 0.25 : 1 }}
+      className={`relative touch-none cursor-grab flex flex-col items-center rounded-3xl transition ${
+        seleccionado ? 'bg-yellow-200/70 ring-4 ring-yellow-300 scale-110' : ''
+      }`}
+      style={{ opacity: isDragging ? 0.2 : 1 }}
     >
-      <ResiduoIcon residuo={residuo} size={size} />
-      {conNombre && <span className="block text-sm font-bold leading-tight max-w-[7rem]">{residuo.nombre}</span>}
+      <img src={residuo.img} alt="" draggable={false} style={{ width: size, height: size }} className="object-contain sprite" />
+      {conNombre && (
+        <span className="chip !text-sm !px-2 !py-0 -mt-1 max-w-[9rem] text-center leading-tight">{residuo.nombre}</span>
+      )}
     </button>
   );
 }
 
-export function TachoSoltable({ tacho, pulso, brillar, onTocar, size }) {
+export function TachoSoltable({ tacho, pulso, brillar, onTocar, alto }) {
   const { setNodeRef, isOver } = useDroppable({ id: tacho.id });
   return (
     <button
@@ -79,9 +80,9 @@ export function TachoSoltable({ tacho, pulso, brillar, onTocar, size }) {
       type="button"
       onClick={() => onTocar?.(tacho.id)}
       aria-label={`${tacho.nombre}: ${tacho.sub}`}
-      className={`rounded-3xl p-1 transition-colors ${isOver ? 'bg-white/70' : 'bg-white/35'}`}
+      className="rounded-3xl px-0.5 pt-1 pb-1 flex justify-center"
     >
-      <Tacho tacho={tacho} abierto={isOver} pulso={pulso} brillar={brillar} size={size} />
+      <Tacho tacho={tacho} abierto={isOver} pulso={pulso} brillar={brillar} alto={alto} />
     </button>
   );
 }

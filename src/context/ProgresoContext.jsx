@@ -1,18 +1,21 @@
 import { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
-import { INSIGNIAS, limpiezaTotal } from '../data/insignias.js';
+import { INSIGNIAS } from '../data/insignias.js';
+import { TOTAL_NIVELES } from '../data/niveles.js';
 
-const CLAVE = 'wari_progreso_v1';
+const CLAVE = 'wari_progreso_v2';
+
+const estrellasVacias = () => Object.fromEntries(Array.from({ length: TOTAL_NIVELES }, (_, i) => [i + 1, 0]));
 
 export const ESTADO_INICIAL = {
-  version: 1,
-  nivelDesbloqueado: 1, // el nivel más alto que se puede jugar
-  estrellas: { 1: 0, 2: 0, 3: 0, 4: 0 },
-  limpiezaNiveles: { 1: 0, 2: 0, 3: 0, 4: 0 }, // cada nivel aporta hasta 25 %
+  version: 2,
+  nivelDesbloqueado: 1,
+  estrellas: estrellasVacias(),
   semillas: 0,
   insignias: [],
-  comprados: [],
-  equipados: [],
+  deco: [], // [{ id, x, y }] en % sobre la escena de Mi laguna
   album: [],
+  escenasVistas: [],
+  juegoTerminado: false,
   stats: {
     aciertos: 0,
     aprovechable: 0,
@@ -26,6 +29,10 @@ export const ESTADO_INICIAL = {
   nuevas: [], // insignias recién ganadas (no se guarda)
 };
 
+export function nivelesCompletos(estado) {
+  return Object.values(estado.estrellas).filter((x) => x > 0).length;
+}
+
 function cargar() {
   try {
     const crudo = localStorage.getItem(CLAVE);
@@ -34,10 +41,10 @@ function cargar() {
     return {
       ...ESTADO_INICIAL,
       ...g,
-      estrellas: { ...ESTADO_INICIAL.estrellas, ...(g.estrellas || {}) },
-      limpiezaNiveles: { ...ESTADO_INICIAL.limpiezaNiveles, ...(g.limpiezaNiveles || {}) },
+      estrellas: { ...estrellasVacias(), ...(g.estrellas || {}) },
       stats: { ...ESTADO_INICIAL.stats, ...(g.stats || {}) },
       ajustes: { ...ESTADO_INICIAL.ajustes, ...(g.ajustes || {}) },
+      deco: Array.isArray(g.deco) ? g.deco : [],
       nuevas: [],
     };
   } catch {
@@ -51,76 +58,62 @@ function guardar(estado) {
     const { nuevas, ...resto } = estado;
     localStorage.setItem(CLAVE, JSON.stringify(resto));
   } catch {
-    /* sin almacenamiento disponible: el juego sigue funcionando */
+    /* sin almacenamiento: el juego sigue funcionando */
   }
 }
 
 function revisarInsignias(estado) {
-  const ganadas = INSIGNIAS.filter((i) => !estado.insignias.includes(i.id) && i.cumple(estado)).map(
-    (i) => i.id,
-  );
+  const vista = { ...estado, nivelesCompletos: nivelesCompletos(estado) };
+  const ganadas = INSIGNIAS.filter((i) => !estado.insignias.includes(i.id) && i.cumple(vista)).map((i) => i.id);
   if (!ganadas.length) return estado;
-  return {
-    ...estado,
-    insignias: [...estado.insignias, ...ganadas],
-    nuevas: [...estado.nuevas, ...ganadas],
-  };
+  return { ...estado, insignias: [...estado.insignias, ...ganadas], nuevas: [...estado.nuevas, ...ganadas] };
 }
 
-function reductor(estado, accion) {
-  switch (accion.tipo) {
+function reductor(estado, a) {
+  switch (a.tipo) {
     case 'ACIERTO': {
-      const r = accion.residuo;
+      const r = a.residuo;
       return {
         ...estado,
         semillas: estado.semillas + 1,
         album: estado.album.includes(r.id) ? estado.album : [...estado.album, r.id],
-        stats: {
-          ...estado.stats,
-          aciertos: estado.stats.aciertos + 1,
-          [r.tacho]: (estado.stats[r.tacho] || 0) + 1,
-        },
+        stats: { ...estado.stats, aciertos: estado.stats.aciertos + 1, [r.tacho]: (estado.stats[r.tacho] || 0) + 1 },
       };
     }
     case 'SEMILLAS':
-      return { ...estado, semillas: estado.semillas + accion.cantidad };
+      return { ...estado, semillas: estado.semillas + a.cantidad };
     case 'ESCANEO':
       return { ...estado, stats: { ...estado.stats, escaneos: estado.stats.escaneos + 1 } };
-    case 'COMPLETAR_NIVEL': {
-      const n = accion.nivel;
+    case 'COMPLETAR_NIVEL':
       return {
         ...estado,
         semillas: estado.semillas + 3,
-        nivelDesbloqueado: Math.max(estado.nivelDesbloqueado, Math.min(n + 1, 4)),
-        estrellas: { ...estado.estrellas, [n]: Math.max(estado.estrellas[n] || 0, accion.estrellas) },
-        limpiezaNiveles: { ...estado.limpiezaNiveles, [n]: 25 },
-        stats: {
-          ...estado.stats,
-          quizPerfecto: estado.stats.quizPerfecto || !!accion.perfecto,
-        },
+        nivelDesbloqueado: Math.max(estado.nivelDesbloqueado, Math.min(a.nivel + 1, TOTAL_NIVELES)),
+        estrellas: { ...estado.estrellas, [a.nivel]: Math.max(estado.estrellas[a.nivel] || 0, a.estrellas) },
+        stats: { ...estado.stats, quizPerfecto: estado.stats.quizPerfecto || !!a.perfecto },
       };
-    }
-    case 'COMPRAR': {
-      if (estado.comprados.includes(accion.id) || estado.semillas < accion.precio) return estado;
+    case 'TERMINAR_JUEGO':
+      return { ...estado, juegoTerminado: true };
+    case 'VER_ESCENA':
+      return estado.escenasVistas.includes(a.id) ? estado : { ...estado, escenasVistas: [...estado.escenasVistas, a.id] };
+    case 'COMPRAR_DECO': {
+      if (estado.semillas < a.precio) return estado;
       return {
         ...estado,
-        semillas: estado.semillas - accion.precio,
-        comprados: [...estado.comprados, accion.id],
-        equipados: [...estado.equipados, accion.id],
+        semillas: estado.semillas - a.precio,
+        deco: [...estado.deco, { id: a.id, x: 15 + Math.random() * 70, y: 56 + Math.random() * 16 }],
       };
     }
-    case 'EQUIPAR': {
-      if (!estado.comprados.includes(accion.id)) return estado;
-      const puesto = estado.equipados.includes(accion.id);
+    case 'MOVER_DECO':
+      return { ...estado, deco: estado.deco.map((d, i) => (i === a.indice ? { ...d, x: a.x, y: a.y } : d)) };
+    case 'QUITAR_DECO':
       return {
         ...estado,
-        equipados: puesto
-          ? estado.equipados.filter((x) => x !== accion.id)
-          : [...estado.equipados, accion.id],
+        semillas: estado.semillas + (a.precio || 0),
+        deco: estado.deco.filter((_, i) => i !== a.indice),
       };
-    }
     case 'AJUSTE':
-      return { ...estado, ajustes: { ...estado.ajustes, [accion.clave]: accion.valor } };
+      return { ...estado, ajustes: { ...estado.ajustes, [a.clave]: a.valor } };
     case 'VER_INSIGNIA':
       return { ...estado, nuevas: estado.nuevas.slice(1) };
     case 'BORRAR':
@@ -130,12 +123,11 @@ function reductor(estado, accion) {
   }
 }
 
+const SIN_INSIGNIAS = new Set(['BORRAR', 'VER_INSIGNIA', 'AJUSTE', 'VER_ESCENA', 'MOVER_DECO']);
+
 function reductorConInsignias(estado, accion) {
   const siguiente = reductor(estado, accion);
-  if (accion.tipo === 'BORRAR' || accion.tipo === 'VER_INSIGNIA' || accion.tipo === 'AJUSTE') {
-    return siguiente;
-  }
-  return revisarInsignias(siguiente);
+  return SIN_INSIGNIAS.has(accion.tipo) ? siguiente : revisarInsignias(siguiente);
 }
 
 const ProgresoContext = createContext(null);
@@ -147,23 +139,26 @@ export function ProgresoProvider({ children }) {
     guardar(estado);
   }, [estado]);
 
-  const valor = useMemo(
-    () => ({
+  const valor = useMemo(() => {
+    const completos = nivelesCompletos(estado);
+    return {
       estado,
-      limpieza: limpiezaTotal(estado),
+      completos,
+      limpieza: Math.min(100, completos * 10),
       acierto: (residuo) => dispatch({ tipo: 'ACIERTO', residuo }),
       sumarSemillas: (cantidad) => dispatch({ tipo: 'SEMILLAS', cantidad }),
       escaneo: () => dispatch({ tipo: 'ESCANEO' }),
-      completarNivel: (nivel, estrellas, perfecto = false) =>
-        dispatch({ tipo: 'COMPLETAR_NIVEL', nivel, estrellas, perfecto }),
-      comprar: (id, precio) => dispatch({ tipo: 'COMPRAR', id, precio }),
-      equipar: (id) => dispatch({ tipo: 'EQUIPAR', id }),
+      completarNivel: (nivel, estrellas, perfecto = false) => dispatch({ tipo: 'COMPLETAR_NIVEL', nivel, estrellas, perfecto }),
+      terminarJuego: () => dispatch({ tipo: 'TERMINAR_JUEGO' }),
+      verEscena: (id) => dispatch({ tipo: 'VER_ESCENA', id }),
+      comprarDeco: (id, precio) => dispatch({ tipo: 'COMPRAR_DECO', id, precio }),
+      moverDeco: (indice, x, y) => dispatch({ tipo: 'MOVER_DECO', indice, x, y }),
+      quitarDeco: (indice, precio) => dispatch({ tipo: 'QUITAR_DECO', indice, precio }),
       ajustar: (clave, valor) => dispatch({ tipo: 'AJUSTE', clave, valor }),
       verInsignia: () => dispatch({ tipo: 'VER_INSIGNIA' }),
       borrar: () => dispatch({ tipo: 'BORRAR' }),
-    }),
-    [estado],
-  );
+    };
+  }, [estado]);
 
   return <ProgresoContext.Provider value={valor}>{children}</ProgresoContext.Provider>;
 }

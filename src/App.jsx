@@ -3,40 +3,40 @@ import { useCallback, useEffect, useState } from 'react';
 import { useProgreso } from './context/ProgresoContext.jsx';
 import { useVoz } from './hooks/useVoz.js';
 import ModalInsignia from './components/ModalInsignia.jsx';
+import Protector from './components/Protector.jsx';
+import { escenaAntes, escenaDespues } from './data/historia.js';
+import Cargando from './screens/Cargando.jsx';
 import Inicio from './screens/Inicio.jsx';
 import Mapa from './screens/Mapa.jsx';
-import Nivel1 from './screens/Nivel1.jsx';
-import Nivel2 from './screens/Nivel2.jsx';
-import Nivel3 from './screens/Nivel3.jsx';
-import Nivel4 from './screens/Nivel4.jsx';
+import Historia from './screens/Historia.jsx';
+import Nivel from './screens/Nivel.jsx';
 import Resultado from './screens/Resultado.jsx';
 import MiLaguna from './screens/MiLaguna.jsx';
 import Album from './screens/Album.jsx';
 import Insignias from './screens/Insignias.jsx';
-import Tienda from './screens/Tienda.jsx';
 import Ajustes from './screens/Ajustes.jsx';
 import ParaProfes from './screens/ParaProfes.jsx';
+import Creditos from './screens/Creditos.jsx';
 
 const PANTALLAS = {
+  cargando: Cargando,
   inicio: Inicio,
   mapa: Mapa,
-  nivel1: Nivel1,
-  nivel2: Nivel2,
-  nivel3: Nivel3,
-  nivel4: Nivel4,
+  historia: Historia,
+  nivel: Nivel,
   resultado: Resultado,
   laguna: MiLaguna,
   album: Album,
   insignias: Insignias,
-  tienda: Tienda,
   ajustes: Ajustes,
   profes: ParaProfes,
+  creditos: Creditos,
 };
 
 export default function App() {
   const { estado } = useProgreso();
   const { callar } = useVoz();
-  const [nav, setNav] = useState({ pantalla: 'inicio', params: {}, clave: 0 });
+  const [nav, setNav] = useState({ pantalla: 'cargando', params: {}, clave: 0 });
 
   const ir = useCallback(
     (pantalla, params = {}) => {
@@ -45,6 +45,27 @@ export default function App() {
       window.scrollTo(0, 0);
     },
     [callar],
+  );
+
+  /** Entra a un nivel, mostrando antes su escena de historia si aún no se vio. */
+  const jugarNivel = useCallback(
+    (n) => {
+      const id = escenaAntes(n);
+      if (id && !estado.escenasVistas.includes(id)) ir('historia', { id, luego: { pantalla: 'nivel', params: { n } } });
+      else ir('nivel', { n });
+    },
+    [estado.escenasVistas, ir],
+  );
+
+  /** Después del resultado: escena de historia (si toca) y luego el mapa o los créditos. */
+  const continuarTras = useCallback(
+    (n) => {
+      const id = escenaDespues(n);
+      const destino = n === 10 ? { pantalla: 'creditos' } : { pantalla: 'mapa', params: { recien: n } };
+      if (id && !estado.escenasVistas.includes(id)) ir('historia', { id, luego: destino });
+      else ir(destino.pantalla, destino.params);
+    },
+    [estado.escenasVistas, ir],
   );
 
   useEffect(() => {
@@ -61,13 +82,15 @@ export default function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.25 }}
+          transition={{ duration: 0.3 }}
           className="min-h-[100dvh]"
         >
-          <Pantalla ir={ir} params={nav.params} />
+          <Protector key={nav.clave} onReiniciar={() => ir('mapa')}>
+            <Pantalla ir={ir} params={nav.params} jugarNivel={jugarNivel} continuarTras={continuarTras} />
+          </Protector>
         </motion.div>
       </AnimatePresence>
-      <ModalInsignia />
+      {nav.pantalla !== 'historia' && nav.pantalla !== 'cargando' && <ModalInsignia />}
     </MotionConfig>
   );
 }

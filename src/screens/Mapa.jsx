@@ -1,94 +1,145 @@
 import { motion } from 'framer-motion';
-import Laguna from '../components/Laguna.jsx';
-import Icono from '../components/Icono.jsx';
-import Encabezado from '../components/Encabezado.jsx';
-import Estrellas from '../components/Estrellas.jsx';
-import Wari from '../components/Wari.jsx';
+import { useEffect, useRef, useState } from 'react';
+import Hud from '../components/Hud.jsx';
+import Modal from '../components/Modal.jsx';
+import Personaje from '../components/Personaje.jsx';
+import { NIVELES, CAPITULOS } from '../data/niveles.js';
+import { HISTORIA } from '../data/historia.js';
 import { useProgreso } from '../context/ProgresoContext.jsx';
 import { useSonidos } from '../hooks/useSonidos.js';
-import { NIVELES } from '../data/niveles.js';
+import { escena, ui, img } from '../assets.js';
 
 const MENU = [
-  { p: 'laguna', icono: 'laguna', txt: 'Mi laguna' },
-  { p: 'album', icono: 'album', txt: 'Álbum' },
-  { p: 'insignias', icono: 'medalla', txt: 'Insignias' },
-  { p: 'tienda', icono: 'tienda', txt: 'Tienda' },
-  { p: 'ajustes', icono: 'ajustes', txt: 'Ajustes' },
-  { p: 'profes', icono: 'familia', txt: 'Profes' },
+  { p: 'laguna', src: img('deco/cantuta'), txt: 'Mi laguna' },
+  { p: 'album', src: ui('cofre'), txt: 'Álbum' },
+  { p: 'insignias', src: img('insignias/primer_guardian'), txt: 'Insignias' },
+  { p: 'cuentos', src: ui('mapa'), txt: 'Historias' },
+  { p: 'ajustes', src: ui('ajustes'), txt: 'Ajustes' },
 ];
 
-export default function Mapa({ ir }) {
-  const { estado, limpieza } = useProgreso();
+// Etiquetas de capítulo sobre el mapa (en %)
+const ETIQUETAS = { 1: [10, 95], 2: [22, 45], 3: [62, 64], 4: [76, 56], 5: [86, 23] };
+
+export default function Mapa({ ir, jugarNivel }) {
+  const { estado, completos } = useProgreso();
   const sonidos = useSonidos();
+  const scroller = useRef(null);
+  const [cuentos, setCuentos] = useState(false);
+  const actual = Math.min(estado.nivelDesbloqueado, NIVELES.length);
+  const nivelActual = NIVELES[actual - 1];
+
+  // Centra el mapa en el nivel actual (en celulares el mapa se desliza).
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    const ancho = el.scrollWidth;
+    el.scrollTo({ left: (nivelActual.mapa[0] / 100) * ancho - el.clientWidth / 2, behavior: 'smooth' });
+  }, [nivelActual]);
+
+  const historiasVistas = Object.entries(HISTORIA).filter(([id]) => estado.escenasVistas.includes(id));
 
   return (
-    <div className="relative min-h-[100dvh] overflow-hidden">
-      <Laguna limpieza={limpieza} className="fixed inset-0 w-full h-full" />
-      <div className="relative z-10 max-w-3xl mx-auto pb-8">
-        <Encabezado titulo="Mapa del valle" onVolver={() => ir('inicio')} />
+    <div className="fixed inset-0 bg-[#1d6a92]">
+      <div ref={scroller} className="absolute inset-x-0 top-0 bottom-[calc(76px+env(safe-area-inset-bottom))] overflow-x-auto overflow-y-hidden">
+        <div className="relative h-full" style={{ aspectRatio: '16 / 9', minWidth: '100%' }}>
+          <img src={escena('mapa')} alt="Mapa del Valle Sagrado" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
 
-        <div className="relative px-4 mt-2">
-          {/* camino */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M28 8 C 80 20, 80 30, 72 34 C 20 46, 20 56, 28 60 C 80 72, 80 80, 72 88" stroke="#fff6e5" strokeWidth="5" strokeDasharray="2 3" fill="none" vectorEffect="non-scaling-stroke" />
-          </svg>
+          {CAPITULOS.map((c) => (
+            <div
+              key={c.n}
+              className="absolute -translate-x-1/2 -translate-y-1/2 panel-oscuro px-3 py-0.5 text-xs sm:text-sm font-extrabold whitespace-nowrap pointer-events-none"
+              style={{ left: `${ETIQUETAS[c.n][0]}%`, top: `${ETIQUETAS[c.n][1]}%` }}
+            >
+              Cap. {c.n} · {c.nombre}
+            </div>
+          ))}
 
-          <div className="relative flex flex-col gap-5">
-            {NIVELES.map((nv, i) => {
-              const bloqueado = nv.n > estado.nivelDesbloqueado;
-              const actual = nv.n === estado.nivelDesbloqueado && !estado.estrellas[nv.n];
-              return (
-                <motion.div
-                  key={nv.n}
-                  initial={{ opacity: 0, x: i % 2 ? 40 : -40 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                  className={`flex items-center gap-3 ${i % 2 ? 'flex-row-reverse text-right' : ''}`}
-                >
-                  <motion.button
-                    type="button"
-                    disabled={bloqueado}
-                    onClick={() => {
-                      sonidos.pop();
-                      ir(nv.pantalla);
-                    }}
-                    animate={actual ? { scale: [1, 1.08, 1] } : {}}
-                    transition={{ duration: 1.4, repeat: Infinity }}
-                    className={`shrink-0 w-28 h-28 sm:w-32 sm:h-32 rounded-[45%] grid place-items-center text-5xl shadow-[0_8px_0_rgba(0,0,0,0.3)] border-4 ${
-                      bloqueado ? 'bg-stone-400 border-stone-500 cursor-not-allowed' : 'bg-ocre border-white'
-                    }`}
-                    aria-label={bloqueado ? `Nivel ${nv.n}: ${nv.nombre}. Bloqueado` : `Jugar nivel ${nv.n}: ${nv.nombre}`}
-                  >
-                    <Icono nombre={bloqueado ? 'candado' : nv.icono} size={64} />
-                  </motion.button>
-                  <div className={`bg-white/90 rounded-3xl px-4 py-2 shadow-lg min-w-0 ${bloqueado ? 'opacity-80' : ''}`}>
-                    <p className="text-sm font-bold text-stone-500">Nivel {nv.n}</p>
-                    <p className="text-xl font-extrabold leading-tight">{nv.nombre}</p>
-                    <p className="text-sm text-stone-600 leading-tight">{bloqueado ? 'Completa el nivel anterior' : nv.desc}</p>
-                    <div className={`mt-1 flex ${i % 2 ? 'justify-end' : ''}`}>
-                      <Estrellas cantidad={estado.estrellas[nv.n]} size={28} />
-                    </div>
+          {NIVELES.map((nv) => {
+            const bloqueado = nv.n > estado.nivelDesbloqueado;
+            const esActual = nv.n === actual && !estado.estrellas[nv.n];
+            return (
+              <div key={nv.n} className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center" style={{ left: `${nv.mapa[0]}%`, top: `${nv.mapa[1]}%` }}>
+                {esActual && (
+                  <div className="absolute bottom-[85%] pointer-events-none">
+                    <Personaje quien="wari" pose="saludando" alto="clamp(70px, 14vh, 130px)" />
                   </div>
-                  {actual && (
-                    <div className="hidden sm:block">
-                      <Wari mood="feliz" size={80} />
-                    </div>
-                  )}
-                </motion.div>
-              );
-            })}
+                )}
+                <motion.button
+                  type="button"
+                  disabled={bloqueado}
+                  onClick={() => {
+                    sonidos.pop();
+                    jugarNivel(nv.n);
+                  }}
+                  animate={esActual ? { scale: [1, 1.12, 1] } : {}}
+                  transition={{ duration: 1.3, repeat: Infinity }}
+                  className={`relative w-[clamp(52px,9vh,84px)] h-[clamp(52px,9vh,84px)] rounded-full grid place-items-center font-extrabold text-2xl sm:text-3xl border-4 shadow-[0_6px_0_rgba(0,0,0,0.35),0_10px_20px_rgba(0,0,0,0.4)] ${
+                    bloqueado
+                      ? 'bg-stone-500/90 border-stone-300 cursor-not-allowed'
+                      : esActual
+                        ? 'bg-gradient-to-b from-[#ff6f9c] to-[#c2185b] border-white text-white brillo'
+                        : 'bg-gradient-to-b from-[#ffd978] to-[#d18e12] border-white text-[#4a2c05]'
+                  }`}
+                  aria-label={bloqueado ? `Nivel ${nv.n}: ${nv.nombre}. Bloqueado` : `Nivel ${nv.n}: ${nv.nombre}`}
+                >
+                  {bloqueado ? <img src={ui('candado')} alt="" className="w-[60%] h-[60%] object-contain" /> : nv.n}
+                </motion.button>
+                <div className="mt-1 flex">
+                  {[1, 2, 3].map((s) => (
+                    <img key={s} src={ui('estrella')} alt="" className="w-4 h-4 sm:w-5 sm:h-5" style={{ filter: s <= (estado.estrellas[nv.n] || 0) ? 'none' : 'grayscale(1) brightness(.6) opacity(.7)' }} />
+                  ))}
+                </div>
+                {!bloqueado && (
+                  <span className="mt-0.5 panel-oscuro !rounded-full px-2 text-[0.7rem] sm:text-xs font-bold whitespace-nowrap">{nv.nombre}</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="absolute inset-x-0 top-0 z-20">
+        <Hud titulo={`Mapa del valle · ${completos}/10`} onVolver={() => ir('inicio')} />
+      </div>
+
+      <nav className="absolute inset-x-0 bottom-0 z-20 flex justify-center gap-2 px-2 pb-[max(0.6rem,env(safe-area-inset-bottom))]" aria-label="Menú">
+        {MENU.map((m) => (
+          <button
+            key={m.p}
+            type="button"
+            className="btn btn-blanco flex-col !gap-0 !px-2 sm:!px-4 py-1 !min-h-[64px] w-[19vw] max-w-[110px]"
+            onClick={() => (m.p === 'cuentos' ? setCuentos(true) : ir(m.p))}
+          >
+            <img src={m.src} alt="" className="w-9 h-9 sm:w-11 sm:h-11 object-contain" />
+            <span className="text-[0.72rem] sm:text-sm leading-tight">{m.txt}</span>
+          </button>
+        ))}
+      </nav>
+
+      <Modal abierto={cuentos} onCerrar={() => setCuentos(false)} etiqueta="Historias">
+        <div className="panel w-full max-w-md p-5">
+          <h2 className="text-2xl font-extrabold text-center mb-3">Historias de Wari</h2>
+          {historiasVistas.length === 0 && <p className="text-center font-bold">¡Juega para descubrir la historia!</p>}
+          <div className="flex flex-col gap-2 max-h-[60vh] overflow-y-auto">
+            {historiasVistas.map(([id, h]) => (
+              <button
+                key={id}
+                type="button"
+                className="flex items-center gap-3 rounded-2xl bg-white border-2 border-amber-200 p-2 text-left hover:bg-amber-50"
+                onClick={() => ir('historia', { id, luego: { pantalla: 'mapa' } })}
+              >
+                <img src={escena(h.fondo)} alt="" className="w-20 h-12 rounded-xl object-cover" />
+                <span className="font-bold leading-tight">{h.titulo || h.lineas[0].texto.slice(0, 48) + '…'}</span>
+              </button>
+            ))}
+          </div>
+          <div className="flex justify-center mt-4">
+            <button type="button" className="btn btn-verde" onClick={() => setCuentos(false)}>
+              Cerrar
+            </button>
           </div>
         </div>
-
-        <nav className="grid grid-cols-3 gap-3 px-4 mt-8" aria-label="Más opciones">
-          {MENU.map((m) => (
-            <button key={m.p} type="button" className="btn btn-blanco flex-col !gap-0 py-2" onClick={() => ir(m.p)}>
-              <Icono nombre={m.icono} size={40} />
-              <span className="text-base">{m.txt}</span>
-            </button>
-          ))}
-        </nav>
-      </div>
+      </Modal>
     </div>
   );
 }

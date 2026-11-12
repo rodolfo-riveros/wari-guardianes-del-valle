@@ -1,20 +1,21 @@
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
-import Laguna from '../components/Laguna.jsx';
-import Icono from '../components/Icono.jsx';
-import Wari from '../components/Wari.jsx';
+import Escena from '../components/Escena.jsx';
+import Personaje from '../components/Personaje.jsx';
 import Dialogo from '../components/Dialogo.jsx';
 import { useProgreso } from '../context/ProgresoContext.jsx';
 import { useSonidos } from '../hooks/useSonidos.js';
 import { frase } from '../data/frases.js';
+import { ui } from '../assets.js';
 
-export default function Inicio({ ir }) {
-  const { limpieza } = useProgreso();
+export default function Inicio({ ir, jugarNivel }) {
+  const { estado, limpieza, completos } = useProgreso();
   const sonidos = useSonidos();
   const [dormido, setDormido] = useState(false);
   const saludo = useMemo(() => frase('saludo'), []);
+  const nuevo = completos === 0 && !estado.escenasVistas.includes('prologo');
 
-  // Si no hay actividad por un rato, Wari se duerme.
+  // Si nadie toca la pantalla, Wari se duerme.
   useEffect(() => {
     let t;
     const despertar = () => {
@@ -23,57 +24,56 @@ export default function Inicio({ ir }) {
       t = setTimeout(() => setDormido(true), 20000);
     };
     despertar();
-    const eventos = ['pointerdown', 'pointermove', 'keydown'];
-    eventos.forEach((e) => window.addEventListener(e, despertar));
+    const ev = ['pointerdown', 'keydown'];
+    ev.forEach((e) => window.addEventListener(e, despertar));
     return () => {
       clearTimeout(t);
-      eventos.forEach((e) => window.removeEventListener(e, despertar));
+      ev.forEach((e) => window.removeEventListener(e, despertar));
     };
   }, []);
 
   return (
-    <div className="relative min-h-[100dvh] overflow-hidden flex flex-col">
-      <Laguna limpieza={limpieza} className="absolute inset-0 w-full h-full" />
-      <div className="tejido h-3 relative z-10" />
+    <div className="relative h-[100dvh] overflow-hidden flex flex-col">
+      <Escena fondo="laguna_sucia" limpieza={limpieza} />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/40 pointer-events-none" />
 
-      <main className="relative z-10 flex-1 flex flex-col items-center justify-between gap-4 px-4 py-6 max-w-3xl mx-auto w-full">
-        <motion.div
-          initial={{ y: -30, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="text-center bg-white/85 rounded-[2rem] px-6 py-3 shadow-xl border-4 border-ocre"
-        >
-          <h1 className="text-4xl sm:text-6xl font-extrabold leading-none text-tierra">Wari</h1>
-          <p className="text-xl sm:text-3xl font-extrabold text-cantuta leading-tight">y los Guardianes del Valle</p>
+      <main className="relative z-10 flex-1 flex flex-col items-center justify-between px-4 pt-[max(1.5rem,env(safe-area-inset-top))] pb-[max(1.25rem,env(safe-area-inset-bottom))] max-w-5xl mx-auto w-full">
+        <motion.div initial={{ y: -40, opacity: 0, scale: 0.8 }} animate={{ y: 0, opacity: 1, scale: 1 }} transition={{ type: 'spring', stiffness: 140, damping: 12 }} className="text-center">
+          <h1 className="titulo-juego text-6xl sm:text-8xl font-extrabold leading-none">Wari</h1>
+          <p className="titulo-juego text-2xl sm:text-4xl font-extrabold leading-tight mt-1">y los Guardianes del Valle</p>
+          <div className="tejido h-3 w-56 sm:w-80 mx-auto rounded-full mt-3 shadow" />
         </motion.div>
 
-        <div className="flex flex-col items-center gap-2 w-full">
+        <div className="flex flex-col sm:flex-row items-center sm:items-end gap-2 w-full justify-center">
           <Dialogo
             texto={dormido ? 'Zzz… ¡Toca la pantalla para despertarme!' : saludo}
             autoHablar={false}
-            className="max-w-md w-full"
+            className="w-full max-w-sm sm:order-2 sm:mb-16"
           />
-          <Wari mood={dormido ? 'durmiendo' : 'saludando'} size={190} />
+          <Personaje quien="wari" pose={dormido ? 'durmiendo' : 'saludando'} alto="clamp(170px, 34vh, 380px)" className="sm:order-1" />
         </div>
 
-        <div className="flex flex-col items-center gap-4 w-full">
+        <div className="flex flex-col items-center gap-3 w-full">
           <motion.button
             type="button"
-            className="btn btn-primario btn-grande"
+            className="btn btn-verde btn-grande"
             animate={{ scale: [1, 1.06, 1] }}
             transition={{ duration: 1.6, repeat: Infinity }}
             onClick={() => {
               sonidos.pop();
-              ir('mapa');
+              if (nuevo) jugarNivel(1);
+              else ir('mapa');
             }}
           >
-            ¡Jugar! <Icono nombre="play" />
+            {nuevo ? '¡Empezar la aventura!' : '¡Continuar!'}
+            <img src={ui('play')} alt="" className="w-10 h-10" />
           </motion.button>
           <div className="flex gap-3 flex-wrap justify-center">
-            <button type="button" className="btn btn-blanco" onClick={() => ir('ajustes')}>
-              <Icono nombre="ajustes" size={28} /> Ajustes
+            <button type="button" className="btn btn-blanco" onClick={() => ir('ajustes', { desde: 'inicio' })}>
+              <img src={ui('ajustes')} alt="" className="w-8 h-8" /> Ajustes
             </button>
-            <button type="button" className="btn btn-blanco" onClick={() => ir('profes')}>
-              <Icono nombre="familia" size={28} /> Para profes y familias
+            <button type="button" className="btn btn-blanco" onClick={() => ir('profes', { desde: 'inicio' })}>
+              Para profes y familias
             </button>
           </div>
         </div>

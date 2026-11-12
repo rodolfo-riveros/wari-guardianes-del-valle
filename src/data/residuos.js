@@ -1,5 +1,7 @@
 // Datos de residuos.
 // IMPORTANTE: los tiempos de descomposición son valores APROXIMADOS de divulgación.
+import { img } from '../assets.js';
+
 // tiempoQuiz: categoría para el quiz del nivel 3 ('dias' | 'meses' | 'anios' | null).
 
 export const CATEGORIAS_TIEMPO = {
@@ -316,7 +318,33 @@ export const RESIDUOS = [
     dificultad: 2,
     mobilenetLabels: ['hair spray'],
   },
+  {
+    id: 'tapitas',
+    nombre: 'Tapitas de plástico',
+    tacho: 'aprovechable',
+    tiempo: 'Cientos de años (aprox. 100 a 400)',
+    tiempoQuiz: 'anios',
+    dato: 'Juntando muchas tapitas se pueden hacer sillas y juguetes nuevos.',
+    reutilizar: 'Úsalas para contar, hacer un mosaico de colores o juegos de mesa.',
+    pista: 'Son de plástico limpio… ¡se reciclan!',
+    dificultad: 1,
+    mobilenetLabels: ['bottlecap', 'bottle cap'],
+  },
+  {
+    id: 'vaso_yogur',
+    nombre: 'Vaso de yogur limpio',
+    tacho: 'aprovechable',
+    tiempo: 'Cientos de años (aprox. 400)',
+    tiempoQuiz: 'anios',
+    dato: 'Si lo enjuagas antes de botarlo, se puede reciclar.',
+    reutilizar: 'Úsalo como macetita para hacer germinar una semilla de habas.',
+    pista: 'Es de plástico y está limpio… ¿qué tacho es para reciclar?',
+    dificultad: 2,
+    mobilenetLabels: ['cup', 'measuring cup'],
+  },
 ];
+
+for (const r of RESIDUOS) r.img = img(`residuos/${r.id}`);
 
 export const RESIDUO_POR_ID = Object.fromEntries(RESIDUOS.map((r) => [r.id, r]));
 

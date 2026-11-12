@@ -40,7 +40,7 @@ export function useVoz() {
   }, []);
 
   const hablar = useCallback(
-    (texto, { forzar = false } = {}) => {
+    (texto, { forzar = false, pitch = 1.3, rate = 0.95 } = {}) => {
       if (!soportado || (!activa && !forzar) || !texto) return;
       try {
         window.speechSynthesis.cancel();
@@ -48,8 +48,8 @@ export function useVoz() {
         const voz = vozElegida || elegirVoz();
         if (voz) u.voice = voz;
         u.lang = voz?.lang || 'es-PE';
-        u.rate = 0.95;
-        u.pitch = 1.2;
+        u.rate = rate;
+        u.pitch = pitch;
         u.volume = 0.9;
         window.speechSynthesis.speak(u);
       } catch {

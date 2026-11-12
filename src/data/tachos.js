@@ -1,3 +1,5 @@
+import { img } from '../assets.js';
+
 // Los 4 tachos según el código de colores peruano (NTP 900.058).
 export const TACHOS = [
   {
@@ -6,7 +8,7 @@ export const TACHOS = [
     oscuro: '#1f7438',
     nombre: 'Tacho verde',
     sub: 'Se recicla',
-    icono: 'reciclar',
+    img: img('tachos/aprovechable'),
     que: 'Plástico limpio, papel, cartón, vidrio y latas',
     presentacion:
       'Este es el tacho verde. Aquí van las cosas que se reciclan: botellas, papel, cartón, vidrio y latas. ¡Siempre limpios!',
@@ -17,7 +19,7 @@ export const TACHOS = [
     oscuro: '#69421d',
     nombre: 'Tacho marrón',
     sub: 'Orgánico',
-    icono: 'organico',
+    img: img('tachos/organico'),
     que: 'Cáscaras, restos de comida y hojas',
     presentacion:
       'Este es el tacho marrón. Aquí van las cáscaras, los restos de comida y las hojas. ¡Se convierten en abono para las plantas!',
@@ -28,7 +30,7 @@ export const TACHOS = [
     oscuro: '#111111',
     nombre: 'Tacho negro',
     sub: 'No se recicla',
-    icono: 'basura',
+    img: img('tachos/no_aprovechable'),
     que: 'Envolturas sucias, papel higiénico, tecnopor sucio y chicle',
     presentacion:
       'Este es el tacho negro. Aquí va lo que ya no se puede reciclar: envolturas sucias, papel higiénico, chicle y tecnopor con comida.',
@@ -39,7 +41,7 @@ export const TACHOS = [
     oscuro: '#a82626',
     nombre: 'Tacho rojo',
     sub: '¡Peligroso!',
-    icono: 'advertencia',
+    img: img('tachos/peligroso'),
     que: 'Pilas, focos, medicinas, aerosoles y celulares viejos',
     presentacion:
       'Y este es el tacho rojo. ¡Cuidado! Aquí van las cosas peligrosas: pilas, focos, medicinas, aerosoles y celulares viejos. Siempre con ayuda de un adulto.',

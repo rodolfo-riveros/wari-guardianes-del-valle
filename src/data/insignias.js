@@ -1,77 +1,17 @@
-// Insignias. Cada una tiene una condición que se revisa con el progreso actual.
-export function limpiezaTotal(estado) {
-  return Object.values(estado.limpiezaNiveles).reduce((a, b) => a + b, 0);
-}
+import { img } from '../assets.js';
 
+// Insignias: cada una con su medalla y su condición.
 export const INSIGNIAS = [
-  {
-    id: 'primer_guardian',
-    nombre: 'Primer guardián',
-    icono: 'escudo',
-    como: 'Clasifica tu primer residuo.',
-    cumple: (e) => e.stats.aciertos >= 1,
-  },
-  {
-    id: 'experto_plastico',
-    nombre: 'Experto en reciclaje',
-    icono: 'reciclar',
-    como: 'Pon 5 residuos en el tacho verde.',
-    cumple: (e) => e.stats.aprovechable >= 5,
-  },
-  {
-    id: 'amigo_organico',
-    nombre: 'Amigo de lo orgánico',
-    icono: 'choclo',
-    como: 'Pon 5 residuos en el tacho marrón.',
-    cumple: (e) => e.stats.organico >= 5,
-  },
-  {
-    id: 'heroe_pilas',
-    nombre: 'Héroe de las pilas',
-    icono: 'pila',
-    como: 'Pon 3 residuos peligrosos en el tacho rojo.',
-    cumple: (e) => e.stats.peligroso >= 3,
-  },
-  {
-    id: 'sabio_tiempo',
-    nombre: 'Sabio del tiempo',
-    icono: 'reloj',
-    como: 'Responde bien todo el quiz del nivel 3.',
-    cumple: (e) => e.stats.quizPerfecto,
-  },
-  {
-    id: 'ojo_condor',
-    nombre: 'Ojo de cóndor',
-    icono: 'condor',
-    como: 'Escanea 3 residuos en el nivel 4.',
-    cumple: (e) => e.stats.escaneos >= 3,
-  },
-  {
-    id: 'laguna_limpia',
-    nombre: 'Laguna limpia',
-    icono: 'gota',
-    como: 'Deja la laguna 100 % limpia.',
-    cumple: (e) => limpiezaTotal(e) >= 100,
-  },
-  {
-    id: 'guardian_total',
-    nombre: 'Guardián total',
-    icono: 'corona',
-    como: 'Gana 3 estrellas en los 4 niveles.',
-    cumple: (e) => [1, 2, 3, 4].every((n) => e.estrellas[n] === 3),
-  },
-  {
-    id: 'coleccionista',
-    nombre: 'Coleccionista',
-    icono: 'libros',
-    como: 'Junta 15 cartitas en tu álbum.',
-    cumple: (e) => e.album.length >= 15,
-  },
-  {
-    id: 'wari_moda',
-    nombre: 'Wari a la moda',
-    icono: 'bufanda',
-    como: 'Compra un accesorio para Wari.',
-    cumple: (e) => e.comprados.length >= 1,
-  },
-];
+  { id: 'primer_guardian', nombre: 'Primer guardián', como: 'Clasifica tu primer residuo.', cumple: (e) => e.stats.aciertos >= 1 },
+  { id: 'experto_plastico', nombre: 'Experto en reciclaje', como: 'Pon 10 residuos en el tacho verde.', cumple: (e) => e.stats.aprovechable >= 10 },
+  { id: 'amigo_organico', nombre: 'Amigo de lo orgánico', como: 'Pon 10 residuos en el tacho marrón.', cumple: (e) => e.stats.organico >= 10 },
+  { id: 'heroe_pilas', nombre: 'Héroe de las pilas', como: 'Pon 5 residuos en el tacho rojo.', cumple: (e) => e.stats.peligroso >= 5 },
+  { id: 'sabio_tiempo', nombre: 'Sabio del tiempo', como: 'Responde todo bien en un quiz.', cumple: (e) => e.stats.quizPerfecto },
+  { id: 'ojo_condor', nombre: 'Ojo de cóndor', como: 'Escanea 3 residuos con la cámara.', cumple: (e) => e.stats.escaneos >= 3 },
+  { id: 'laguna_limpia', nombre: 'Laguna limpia', como: 'Deja la laguna 100 % limpia.', cumple: (e) => e.nivelesCompletos >= 10 },
+  { id: 'guardian_total', nombre: 'Guardián total', como: 'Gana 3 estrellas en todos los niveles.', cumple: (e) => Object.values(e.estrellas).filter((x) => x === 3).length >= 10 },
+  { id: 'coleccionista', nombre: 'Coleccionista', como: 'Junta 20 cartas en tu álbum.', cumple: (e) => e.album.length >= 20 },
+  { id: 'poncho', nombre: 'Poncho del Guardián', como: 'Termina la historia de Wari.', cumple: (e) => e.juegoTerminado },
+  { id: 'jardinero', nombre: 'Jardinero del valle', como: 'Pon 5 plantas o animales en tu laguna.', cumple: (e) => e.deco.length >= 5 },
+  { id: 'heroe_valle', nombre: 'Héroe del valle', como: 'Llega al pie del gran nevado.', cumple: (e) => e.nivelesCompletos >= 8 },
+].map((i) => ({ ...i, img: img(`insignias/${i.id}`) }));
