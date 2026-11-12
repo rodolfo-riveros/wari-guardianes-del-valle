@@ -17,7 +17,7 @@ npm run preview  # prueba la versión de dist/ en http://localhost:4173
 2. Enciende Apache en el panel de XAMPP.
 3. Abre `http://localhost/wari-guardianes-del-valle/dist/`
 
-> La cámara solo funciona en `localhost` o con `https`. Si entras desde otra PC por la IP (http://192.168…), el nivel 4 pasa solo al modo "elegir a mano".
+> La cámara solo funciona en `localhost` o con `https`. Si entras desde otra PC por la IP (http://192.168…), el nivel 8 pasa solo al modo "elegir a mano".
 
 ## Publicar gratis
 - **Netlify**: entra a app.netlify.com/drop y arrastra la carpeta `dist/`. Te da un enlace https.
